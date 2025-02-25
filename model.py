@@ -64,10 +64,13 @@ class Mamba(nn.Module):
             self.lm_head = nn.Linear(args.d_model, 1, bias=False)  
 
     def forward(self, x):
+        x = x.float()  
         for layer in self.layers:
             x = layer(x)
         x = self.norm_f(x)
-        return self.lm_head(x)
+        
+        x = self.lm_head(x)  
+        return x[:, -1, :]  
 
     @staticmethod
     def from_pretrained(pretrained_model_name: str, model=None):
